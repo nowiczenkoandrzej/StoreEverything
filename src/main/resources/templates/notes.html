@@ -7,5 +7,14 @@
 </head>
 <body>
 
+<h1>All Notes</h1>
+
+<ul>
+    <li th:each="note : ${notes}">
+        <span th:text="${note.title}">Title</span> - <span th:text="${note.publicationDate}">Date</span>
+        <br/>
+        <span th:text="${note.content.substring(0, 100)}">...</span>  <a th:href="@{/notes/{id}(id=${note.id})}">Details</a> </li>
+</ul>
+
 </body>
 </html>
