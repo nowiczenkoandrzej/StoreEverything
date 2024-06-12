@@ -23,8 +23,19 @@ public class NoteController {
     private NoteService noteService;
 
     @PostMapping
-    public NoteEntity addNote(@RequestBody NoteEntity note) {
-        return noteService.addNote(note);
+    public String addNote(
+            @Valid NoteEntity note,
+            BindingResult bindingResult,
+            Model model
+    ) {
+
+        note.setPublicationDate(LocalDate.now());
+        noteService.addNote(note);
+
+        List<NoteEntity> notes = noteService.getAllNotes();
+
+        model.addAttribute("notes", notes);
+        return "redirect:/notes";
     }
 
     @PutMapping("/{id}")
@@ -34,21 +45,32 @@ public class NoteController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteNote(@PathVariable long id) {
-        noteService.deleteNote(id);
+    public String deleteNote(
+            @PathVariable long id,
+            Model model
+    ) {
+        System.out.println("delete");
+        try {
+            noteService.deleteNote(id);
+
+            List<NoteEntity> notes = noteService.getAllNotes();
+
+            model.addAttribute("notes", notes);
+            model.addAttribute("noteToDelete", new NoteEntity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/notes";
     }
 
     @GetMapping
-    public ModelAndView getAllNotes() {
+    public String getAllNotes(Model model) {
         var notes =  noteService.getAllNotes();
 
-        Map<String, Object> model = new HashMap<>();
-        model.put("Notatki", notes);
+        model.addAttribute("notes", notes);
 
-        ModelAndView modelAndView = new ModelAndView("notes");
-        modelAndView.addObject(model);
-
-        return modelAndView;
+        return "notes";
     }
 
     @GetMapping("/new")
@@ -60,23 +82,5 @@ public class NoteController {
         return "add_note.html";
     }
 
-    @PostMapping("/addNew")
-    public String AddNew(
-            @Valid NoteEntity note,
-            BindingResult bindingResult,
-            Model model
-    ) {
-
-        note.setPublicationDate(LocalDate.now());
-        note.setId(null);
-        noteService.addNote(note);
-
-        List<NoteEntity> notes = noteService.getAllNotes();
-
-        model.addAttribute("notes", notes);
-
-
-        return "notes";
-    }
 
 }

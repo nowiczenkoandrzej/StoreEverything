@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://thymeleaf.org">
+      xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
     <meta charset="UTF-8">
@@ -11,7 +12,7 @@
 
 <h1>Create New Post</h1>
 
-<form th:object="${noteForm}" th:action="@{/notes/addNew}" th:method="post" class="mb-3">
+<form th:object="${noteForm}" th:action="@{/notes}" th:method="post" class="mb-3">
     <div class="form-group row">
         <label for="title" class="col-sm-2 col-form-label">Title:</label>
         <div class="col-sm-10">
